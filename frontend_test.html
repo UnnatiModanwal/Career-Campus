@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend API Test</title>
+    <script src="https://unpkg.com/axios@1.4.0/dist/axios.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .result { margin: 20px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; white-space: pre-wrap; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input[type="file"] { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Frontend API Test - Exact React Behavior</h1>
+    
+    <h2>1. Test Health Check (exactly like SimpleUploadTest)</h2>
+    <button onclick="testHealthLikeReact()">Test Health Like React</button>
+    <div id="healthResult" class="result"></div>
+
+    <h2>2. Test File Upload (exactly like FileUploadForm)</h2>
+    <div>
+        <label>Resume File:</label><br>
+        <input type="file" id="resumeFile" accept=".pdf,.txt">
+    </div>
+    <div>
+        <label>Job Description File:</label><br>
+        <input type="file" id="jobFile" accept=".pdf,.txt">
+    </div>
+    <button onclick="testFileUploadLikeReact()">Test Upload Like React</button>
+    <div id="uploadResult" class="result"></div>
+
+    <script>
+        // Test exactly like SimpleUploadTest.js
+        async function testHealthLikeReact() {
+            const resultDiv = document.getElementById('healthResult');
+            resultDiv.innerHTML = 'Testing health check exactly like React app...';
+            
+            try {
+                // This is exactly what SimpleUploadTest.js does
+                const healthResponse = await axios.get('http://localhost:8000/health');
+                console.log('Backend health:', healthResponse.data);
+                
+                resultDiv.innerHTML = `✅ Health check passed!
+Response: ${JSON.stringify(healthResponse.data, null, 2)}`;
+                resultDiv.className = 'result success';
+            } catch (err) {
+                console.error('Health check error:', err);
+                const errorMsg = 'Backend server is not running on port 8000';
+                resultDiv.innerHTML = `❌ Error: ${errorMsg}
+Details: ${err.message}
+Network Error: ${err.code || 'Unknown'}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        // Test exactly like FileUploadForm.js
+        async function testFileUploadLikeReact() {
+            const resultDiv = document.getElementById('uploadResult');
+            const resumeFile = document.getElementById('resumeFile').files[0];
+            const jobFile = document.getElementById('jobFile').files[0];
+            
+            if (!resumeFile || !jobFile) {
+                resultDiv.innerHTML = '❌ Please select both files';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            resultDiv.innerHTML = 'Testing upload exactly like React app...';
+            
+            // This is exactly what FileUploadForm.js does
+            const formData = new FormData();
+            formData.append('resume', resumeFile);
+            formData.append('job_description', jobFile);
+            
+            try {
+                console.log('Sending request to backend...');
+                const response = await axios.post('http://localhost:8000/analyze/files', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    timeout: 60000, // 60 second timeout
+                });
+                
+                console.log('Analysis response:', response.data);
+                resultDiv.innerHTML = `✅ Upload successful!
+Fit Score: ${response.data.percentage}
+Feedback: ${response.data.feedback.substring(0, 200)}...`;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                
+                let errorMessage = 'Failed to analyze files. Please try again.';
+                
+                if (error.code === 'ECONNABORTED') {
+                    errorMessage = 'Request timeout. The analysis is taking too long.';
+                } else if (error.code === 'ERR_NETWORK') {
+                    errorMessage = 'Network error. Make sure the backend server is running on port 8000.';
+                } else if (error.response) {
+                    errorMessage = error.response.data?.detail || `Server error: ${error.response.status}`;
+                } else if (error.request) {
+                    errorMessage = 'No response from server. Make sure the backend is running.';
+                }
+                
+                resultDiv.innerHTML = `❌ Upload failed: ${errorMessage}
+Error details: ${error.message}
+Error code: ${error.code || 'Unknown'}`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        // Auto-test health on page load
+        window.onload = function() {
+            testHealthLikeReact();
+        };
+    </script>
+</body>
+</html>

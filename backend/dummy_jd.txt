@@ -1,0 +1,33 @@
+SENIOR FULL STACK DEVELOPER
+Tech Innovations Inc.
+
+JOB DESCRIPTION
+We are seeking a Senior Full Stack Developer to join our growing engineering team. The ideal candidate will have strong expertise in Python backend development and modern frontend frameworks, with experience building scalable web applications.
+
+RESPONSIBILITES
+- Design and develop robust web applications using Python (Django/Flask) and React
+- Build and maintain RESTful APIs and microservices
+- Work with PostgreSQL and Redis for data management
+- Collaborate with product team to implement new features
+- Write clean, testable code with proper documentation
+- Participate in code reviews and maintain coding standards
+- Deploy applications using Docker and AWS cloud services
+
+REQUIRED QUALIFICATIONS
+- 4+ years of experience in full-stack web development
+- Proficiency in Python (Django or Flask framework)
+- Strong knowledge of JavaScript and React
+- Experience with PostgreSQL or similar databases
+- Familiarity with Git version control
+- Understanding of RESTful API design principles
+- Knowledge of HTML5, CSS3, and responsive design
+
+PREFERRED QUALIFICATIONS
+- Experience with AWS cloud services (EC2, S3, RDS)
+- Knowledge of Docker containerization
+- Familiarity with Redis caching
+- Experience with testing frameworks (pytest, Jest)
+- Understanding of CI/CD pipelines
+- Bachelor's degree in Computer Science or related field
+
+We offer competitive salary, health benefits, and flexible work arrangements.

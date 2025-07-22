@@ -1,0 +1,29 @@
+JOHN SMITH
+Software Engineer
+Email: john.smith@email.com | Phone: (555) 123-4567
+
+SUMMARY
+Experienced software engineer with 5+ years developing web applications using Python, JavaScript, and React. Strong background in backend development with Flask/Django and database management with PostgreSQL.
+
+TECHNICAL SKILLS
+- Programming Languages: Python, JavaScript, HTML/CSS, SQL
+- Frameworks: React, Flask, Django, Node.js
+- Databases: PostgreSQL, MongoDB, MySQL
+- Tools: Git, Docker, AWS, Linux
+- Other: RESTful APIs, Unit Testing, Agile Methodology
+
+PROFESSIONAL EXPERIENCE
+Software Engineer - ABC Tech Company (2019-2024)
+- Developed and maintained web applications using Python/Django and React
+- Built RESTful APIs serving 10k+ daily users
+- Collaborated with cross-functional teams in Agile environment
+- Optimized database queries reducing load times by 40%
+
+Junior Developer - XYZ Startup (2018-2019)
+- Created responsive web interfaces using HTML, CSS, JavaScript
+- Assisted in backend development using Flask
+- Participated in code reviews and testing
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of Technology (2014-2018)

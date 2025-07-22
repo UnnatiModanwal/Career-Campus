@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Compass API Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .result { margin: 20px 0; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        textarea { width: 100%; height: 100px; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>Career Compass API Debug Test</h1>
+    
+    <h2>1. Backend Health Check</h2>
+    <button onclick="testHealth()">Test Health Endpoint</button>
+    <div id="healthResult" class="result"></div>
+
+    <h2>2. Test File Upload</h2>
+    <div>
+        <label>Resume File:</label><br>
+        <input type="file" id="resumeFile" accept=".txt,.pdf">
+    </div>
+    <div>
+        <label>Job Description File:</label><br>
+        <input type="file" id="jobFile" accept=".txt,.pdf">
+    </div>
+    <button onclick="testFileUpload()">Test File Upload</button>
+    <div id="uploadResult" class="result"></div>
+
+    <h2>3. Test Text Analysis</h2>
+    <div>
+        <label>Resume Text:</label><br>
+        <textarea id="resumeText" placeholder="Paste resume text here...">John Smith
+Software Engineer
+Email: john@email.com
+
+SKILLS:
+- Python, JavaScript
+- React, Node.js
+- 3 years experience</textarea>
+    </div>
+    <div>
+        <label>Job Description Text:</label><br>
+        <textarea id="jobText" placeholder="Paste job description here...">Senior Developer Position
+
+Requirements:
+- 2+ years Python experience
+- React knowledge
+- Full-stack development</textarea>
+    </div>
+    <button onclick="testTextAnalysis()">Test Text Analysis</button>
+    <div id="textResult" class="result"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function testHealth() {
+            const resultDiv = document.getElementById('healthResult');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ Health Check Passed<br>Response: ${JSON.stringify(data, null, 2)}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Health Check Failed: ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testFileUpload() {
+            const resultDiv = document.getElementById('uploadResult');
+            const resumeFile = document.getElementById('resumeFile').files[0];
+            const jobFile = document.getElementById('jobFile').files[0];
+            
+            if (!resumeFile || !jobFile) {
+                resultDiv.innerHTML = '<div class="error">❌ Please select both files</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = 'Uploading files...';
+            
+            const formData = new FormData();
+            formData.append('resume', resumeFile);
+            formData.append('job_description', jobFile);
+            
+            try {
+                const response = await fetch(`${API_BASE}/analyze/files`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ File Upload Successful!<br>
+                        <strong>Fit Score:</strong> ${data.percentage}<br>
+                        <strong>Feedback:</strong> ${data.feedback.substring(0, 200)}...
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Upload Failed: ${JSON.stringify(data)}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testTextAnalysis() {
+            const resultDiv = document.getElementById('textResult');
+            const resumeText = document.getElementById('resumeText').value;
+            const jobText = document.getElementById('jobText').value;
+            
+            if (!resumeText || !jobText) {
+                resultDiv.innerHTML = '<div class="error">❌ Please fill both text areas</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = 'Analyzing text...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/analyze/text`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        resume_text: resumeText,
+                        job_description: jobText
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ Text Analysis Successful!<br>
+                        <strong>Fit Score:</strong> ${data.percentage}<br>
+                        <strong>Feedback:</strong> ${data.feedback.substring(0, 200)}...
+                    </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Analysis Failed: ${JSON.stringify(data)}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Network Error: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-test health on page load
+        window.onload = function() {
+            testHealth();
+        };
+    </script>
+</body>
+</html>
